@@ -13,10 +13,12 @@ public class ArrayStorage {
         }
         size = 0;
     }
+
     void save(Resume r) {
         storage[size] = r;
         size++;
     }
+
     Resume get(String uuid) {
         Resume resume = null;
         for (int i = 0; i < size; i++) {
@@ -27,9 +29,9 @@ public class ArrayStorage {
         if (resume == null) {
             System.out.println("Резюме c uuid " + uuid + " не найдено");
         }
-
         return resume;
     }
+
     void delete(String uuid) {
         int deleted = size;
         for (int i = 0; i < size; i++) {
@@ -38,10 +40,11 @@ public class ArrayStorage {
         for (int j = deleted; j < size - 1; j++) {
             storage[j] = storage[j + 1];
         }
-        if (deleted!=size){
+        if (deleted != size) {
             size--;
         }
     }
+
     /**
      * @return array, contains only Resumes in storage (without null)
      */
