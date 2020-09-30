@@ -5,31 +5,31 @@ import java.util.ArrayList;
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    private static int size = 0;
+    private int size = 0;
 
     void clear() {
         for (int i = 0; i < size; i++) {
             storage[i] = null;
         }
+        size = 0;
     }
-
     void save(Resume r) {
         storage[size] = r;
         size++;
     }
-
     Resume get(String uuid) {
-        Resume get = null;
+        Resume resume = null;
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uuid)) get = storage[i];
+            if (storage[i].uuid.equals(uuid)) {
+                resume = storage[i];
+            }
         }
-        if (get == null) System.out.println("Резюме c uuid " + uuid + " не найдено");
+        if (resume == null) {
+            System.out.println("Резюме c uuid " + uuid + " не найдено");
+        }
 
-        return get;
-
-
+        return resume;
     }
-
     void delete(String uuid) {
         int deleted = size;
         for (int i = 0; i < size; i++) {
@@ -38,18 +38,19 @@ public class ArrayStorage {
         for (int j = deleted; j < size - 1; j++) {
             storage[j] = storage[j + 1];
         }
-        size--;
+        if (deleted!=size){
+            size--;
+        }
     }
-
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] filled = new Resume[size];
+        Resume[] resumes = new Resume[size];
         for (int i = 0; i < size; i++) {
-            filled[i] = storage[i];
+            resumes[i] = storage[i];
         }
-        return filled;
+        return resumes;
     }
 
     int size() {
