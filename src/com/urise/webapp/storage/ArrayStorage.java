@@ -8,21 +8,22 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10_000];
     int size = 0;
+    private Resume[] storage = new Resume[10_000];
 
     public void clear() {
-        Arrays.fill(storage, 0, size - 1, null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
     public void update(Resume resume) {
         String resumeSearchId = resume.getUuid();
-        if (uuidPresent(resumeSearchId) > -1) {
-            storage[uuidPresent(resumeSearchId)] = resume;
-            System.out.println("Резюме с uuid=" + resumeSearchId + " - обновлено");
+        int indexId = uuidPresent(resumeSearchId);
+        if (indexId > -1) {
+            storage[indexId] = resume;
+            System.out.println("Резюме с uuid = " + resumeSearchId + " - обновлено");
         } else {
-            System.out.println("Резюме с uuid=" + resumeSearchId + " - отсутствует в базе ");
+            System.out.println("Резюме с uuid = " + resumeSearchId + " - отсутствует в базе ");
         }
     }
 
@@ -33,31 +34,29 @@ public class ArrayStorage {
                 storage[size] = resume;
                 size++;
             } else {
-                System.out.println("Резюме с uuid=" + resumeSearchId + " уже есть в базе ");
+                System.out.println("Резюме с uuid = " + resumeSearchId + " уже есть в базе ");
             }
         } else System.out.println("Сохранение невозможно. База переполнена!");
     }
 
     public Resume get(String uuid) {
+        int indexId = uuidPresent(uuid);
         Resume resume = null;
-        if (uuidPresent(uuid) > -1) {
-            resume = storage[uuidPresent(uuid)];
-        }
-        if (resume == null) {
-            System.out.println("Резюме c uuid=" + uuid + " - не найдено");
+        if (indexId > -1) {
+            resume = storage[indexId];
+        } else {
+            System.out.println("Резюме c uuid = " + uuid + " - не найдено");
         }
         return resume;
     }
 
     public void delete(String uuid) {
-        if (uuidPresent(uuid) > -1) {
-            int deleted = uuidPresent(uuid);
-            if (size - 1 - deleted >= 0) System.arraycopy(storage, deleted + 1, storage, deleted, size - 1 - deleted);
-            if (deleted != size) {
-                size--;
-            }
+        int indexId = uuidPresent(uuid);
+        if (indexId > -1) {
+            if (size - 1 - indexId >= 0) System.arraycopy(storage, indexId + 1, storage, indexId, size - 1 - indexId);
+            size--;
         } else {
-            System.out.println("Резюме c uuid=" + uuid + " не найдено");
+            System.out.println("Резюме c uuid = " + uuid + " не найдено");
         }
     }
 
