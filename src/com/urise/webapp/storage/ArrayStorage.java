@@ -17,24 +17,24 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        String resumeSearchId = resume.getUuid();
-        int indexId = uuidPresent(resumeSearchId);
+        String resumeId = resume.getUuid();
+        int indexId = uuidPresent(resumeId);
         if (indexId > -1) {
             storage[indexId] = resume;
-            System.out.println("Резюме с uuid = " + resumeSearchId + " - обновлено");
+            System.out.println("Резюме с uuid = " + resumeId + " - обновлено");
         } else {
-            System.out.println("Резюме с uuid = " + resumeSearchId + " - отсутствует в базе ");
+            System.out.println("Резюме с uuid = " + resumeId + " - отсутствует в базе ");
         }
     }
 
     public void save(Resume resume) {
-        String resumeSearchId = resume.getUuid();
+        String resumeId = resume.getUuid();
         if (size != storage.length) {
-            if (uuidPresent(resumeSearchId) == -1) {
+            if (uuidPresent(resumeId) == -1) {
                 storage[size] = resume;
                 size++;
             } else {
-                System.out.println("Резюме с uuid = " + resumeSearchId + " уже есть в базе ");
+                System.out.println("Резюме с uuid = " + resumeId + " уже есть в базе ");
             }
         } else System.out.println("Сохранение невозможно. База переполнена!");
     }
@@ -53,8 +53,10 @@ public class ArrayStorage {
     public void delete(String uuid) {
         int indexId = uuidPresent(uuid);
         if (indexId > -1) {
-            if (size - 1 - indexId >= 0) System.arraycopy(storage, indexId + 1, storage, indexId, size - 1 - indexId);
+            if (size - 1 - indexId >= 0) {
+                System.arraycopy(storage, indexId + 1, storage, indexId, size - 1 - indexId);
             size--;
+            }
         } else {
             System.out.println("Резюме c uuid = " + uuid + " не найдено");
         }
