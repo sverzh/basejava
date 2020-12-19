@@ -43,7 +43,7 @@ public abstract class AbstractArrayStorage implements Storage {
         int index = getIndex(uuid);
         if (index > -1) {
             if (size - 1 - index >= 0) {
-                System.arraycopy(storage, index + 1, storage, index, size - 1 - index);
+                deleteElement(index);
                 size--;
             }
         } else {
@@ -73,6 +73,8 @@ public abstract class AbstractArrayStorage implements Storage {
     protected abstract int getIndex(String uuid);
 
     protected abstract void insertElement(Resume resume, int index);
+
+    protected abstract void deleteElement(int index);
 
 
 }
