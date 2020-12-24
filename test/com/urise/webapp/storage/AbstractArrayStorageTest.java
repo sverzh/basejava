@@ -21,13 +21,11 @@ public abstract class AbstractArrayStorageTest {
 
     @Before
     public void setUp() throws Exception {
-
         storage.clear();
         storage.save(new Resume(UUID_1));
         storage.save(new Resume(UUID_2));
         storage.save(new Resume(UUID_3));
     }
-
 
     @Test
     public void clear() {
@@ -47,7 +45,10 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void save() {
+        int sizeBefore = storage.size();
         storage.save(new Resume(UUID_4));
+        Assert.assertEquals(sizeBefore + 1, storage.size());
+        Assert.assertEquals(storage.get(UUID_4), new Resume(UUID_4));
     }
 
     @Test(expected = ExistStorageException.class)
@@ -57,18 +58,22 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void delete() {
-        storage.delete("uuid1");
-        Assert.assertEquals(2, storage.size());
+        int sizeBefore = storage.size();
+        storage.delete(UUID_1);
+        Assert.assertEquals(sizeBefore - 1, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() {
-        storage.delete("uuid5");
+        storage.delete(UUID_4);
     }
 
     @Test
     public void getAll() {
-        Assert.assertEquals(storage.size(), storage.getAll().length);
+        Resume[] r = storage.getAll();
+        Assert.assertEquals(new Resume(UUID_1), r[0]);
+        Assert.assertEquals(new Resume(UUID_2), r[1]);
+        Assert.assertEquals(new Resume(UUID_3), r[2]);
     }
 
     @Test
@@ -78,7 +83,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void get() {
-        storage.get("uuid2");
+        Assert.assertEquals(UUID_2, storage.get(UUID_2).getUuid());
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -87,10 +92,10 @@ public abstract class AbstractArrayStorageTest {
     }
 
     @Test(expected = StorageException.class)
-    public void fillStorage() {
+    public void fillStorageOverflow() {
         storage.clear();
         try {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume());
             }
         } catch (Exception e) {
