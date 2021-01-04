@@ -1,7 +1,7 @@
 package com.urise.webapp;
 
 import com.urise.webapp.model.Resume;
-import com.urise.webapp.storage.ListStorage;
+import com.urise.webapp.storage.MapStorage;
 
 /**
  * Test for your com.urise.webapp.storage.ArrayStorage implementation
@@ -9,7 +9,9 @@ import com.urise.webapp.storage.ListStorage;
 public class MainTestArrayStorage {
     //private final static ArrayStorage ARRAY_STORAGE = new ArrayStorage();
     // private final static SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
-    private final static ListStorage ARRAY_STORAGE = new ListStorage();
+    //private final static ListStorage ARRAY_STORAGE = new ListStorage();
+    private final static MapStorage ARRAY_STORAGE = new MapStorage();
+
 
     public static void main(String[] args) {
         final Resume r1 = new Resume("uuid1");

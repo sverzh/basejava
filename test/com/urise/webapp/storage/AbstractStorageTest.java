@@ -7,19 +7,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
-    private Storage storage;
+    protected Storage storage;
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
-    }
-
-    public Storage getStorage() {
-        return storage;
     }
 
     @Before
@@ -75,9 +74,11 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAll() {
         Resume[] r = storage.getAll();
-        Assert.assertEquals(new Resume(UUID_1), r[0]);
-        Assert.assertEquals(new Resume(UUID_2), r[1]);
-        Assert.assertEquals(new Resume(UUID_3), r[2]);
+        ArrayList<Resume> list = new ArrayList<>();
+        Collections.addAll(list, r);
+        Assert.assertTrue(list.contains(new Resume(UUID_1)));
+        Assert.assertTrue(list.contains(new Resume(UUID_2)));
+        Assert.assertTrue(list.contains(new Resume(UUID_3)));
     }
 
     @Test
