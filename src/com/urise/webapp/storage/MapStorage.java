@@ -1,7 +1,5 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
@@ -9,43 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
-    Map<String, Resume> map = new HashMap<>();
-
-    @Override
-    public void save(Resume resume) {
-        String key = resume.getUuid();
-        if (map.containsKey(key)) {
-            throw new ExistStorageException(key);
-        } else {
-            map.put(key, resume);
-        }
-    }
-
-    @Override
-    public void delete(String uuid) {
-        if (!map.containsKey(uuid)) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            map.remove(uuid);
-        }
-    }
-
-    @Override
-    public void update(Resume resume) {
-        String key = resume.getUuid();
-        if (map.containsKey(key)) {
-            map.put(resume.getUuid(), resume);
-            System.out.println("Резюме с uuid = " + key + " - обновлено");
-        } else {
-            throw new NotExistStorageException(key);
-        }
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        if (map.get(uuid) == null) throw new NotExistStorageException(uuid);
-        return map.get(uuid);
-    }
+    private Map<String, Resume> map = new HashMap<>();
 
     @Override
     public void clear() {
@@ -67,22 +29,29 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return null;
+    protected boolean isExist(Object index) {
+        return map.containsKey(index);
     }
-
 
     @Override
-    protected void updateResume(Resume resume, int index) {
+    protected Resume getResume(Object index) {
+        return map.get(index);
     }
 
-    protected void deleteResume(int index) {
+    @Override
+    protected void updateResume(Resume resume, Object index) {
+        map.put((String) index, resume);
     }
 
-    protected void addResume(Resume resume, int index) {
+    protected void deleteResume(Object index) {
+        map.remove(index);
     }
 
-    protected int getIndex(String uuid) {
-        return 0;
+    protected void addResume(Resume resume, Object index) {
+        map.put((String) index, resume);
+    }
+
+    protected String getIndex(String uuid) {
+        return uuid;
     }
 }

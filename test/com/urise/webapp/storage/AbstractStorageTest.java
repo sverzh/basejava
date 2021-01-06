@@ -76,6 +76,7 @@ public abstract class AbstractStorageTest {
         Resume[] r = storage.getAll();
         ArrayList<Resume> list = new ArrayList<>();
         Collections.addAll(list, r);
+        System.out.println(list);
         Assert.assertTrue(list.contains(new Resume(UUID_1)));
         Assert.assertTrue(list.contains(new Resume(UUID_2)));
         Assert.assertTrue(list.contains(new Resume(UUID_3)));

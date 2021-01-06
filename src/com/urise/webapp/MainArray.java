@@ -15,7 +15,7 @@ public class MainArray {
     //private final static ArrayStorage ARRAY_STORAGE = new ArrayStorage();
     //private final static SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
     private final static MapStorage ARRAY_STORAGE = new MapStorage();
-
+    //private final static ListStorage ARRAY_STORAGE = new ListStorage();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

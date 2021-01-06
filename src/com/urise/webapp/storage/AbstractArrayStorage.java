@@ -25,25 +25,30 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getResume(int index) {
-        return storage[index];
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
     }
 
-    protected void updateResume(Resume resume, int index) {
-        storage[index] = resume;
+    @Override
+    protected Resume getResume(Object index) {
+        return storage[(Integer) index];
     }
 
-    protected void addResume(Resume resume, int index) {
+    protected void updateResume(Resume resume, Object index) {
+        storage[(Integer) index] = resume;
+    }
+
+    protected void addResume(Resume resume, Object index) {
         if (size == storage.length) {
             throw new StorageException("Сохранение невозможно. База переполнена!", resume.getUuid());
         }
-        insertElement(resume, index);
+        insertElement(resume, (Integer) index);
         size++;
     }
 
-    protected void deleteResume(int index) {
-        if (size - 1 - index >= 0) {
-            deleteElement(index);
+    protected void deleteResume(Object index) {
+        if (size - 1 - (Integer) index >= 0) {
+            deleteElement((Integer) index);
             storage[size - 1] = null;
             size--;
         }
@@ -52,6 +57,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void insertElement(Resume resume, int index);
 
     protected abstract void deleteElement(int index);
-
-
 }
