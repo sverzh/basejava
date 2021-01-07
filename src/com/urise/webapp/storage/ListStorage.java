@@ -24,7 +24,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Integer getIndex(String uuid) {
+    public Integer getSearchKey(String uuid) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -48,10 +48,12 @@ public class ListStorage extends AbstractStorage {
         list.set((Integer) index, resume);
     }
 
+    @Override
     protected void deleteResume(Object index) {
         list.remove(((Integer) index).intValue());
     }
 
+    @Override
     protected void addResume(Resume resume, Object index) {
         list.add(resume);
     }
