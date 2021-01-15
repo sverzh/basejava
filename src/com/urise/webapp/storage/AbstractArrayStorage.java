@@ -4,6 +4,8 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
@@ -16,8 +18,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    public List<Resume> getAllSorted() {
+        List<Resume> list = Arrays.asList(Arrays.copyOf(storage, size));
+        Collections.sort(list);
+        return list;
     }
 
     public int size() {
@@ -25,30 +29,30 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        return (Integer) index >= 0;
+    protected boolean isExist(Object searchKey) {
+        return (Integer) searchKey >= 0;
     }
 
     @Override
-    protected Resume getResume(Object index) {
-        return storage[(Integer) index];
+    protected Resume getResume(Object searchKey) {
+        return storage[(Integer) searchKey];
     }
 
-    protected void updateResume(Resume resume, Object index) {
-        storage[(Integer) index] = resume;
+    protected void updateResume(Resume resume, Object searchKey) {
+        storage[(Integer) searchKey] = resume;
     }
 
-    protected void addResume(Resume resume, Object index) {
+    protected void addResume(Resume resume, Object searchKey) {
         if (size == storage.length) {
             throw new StorageException("Сохранение невозможно. База переполнена!", resume.getUuid());
         }
-        insertElement(resume, (Integer) index);
+        insertElement(resume, (Integer) searchKey);
         size++;
     }
 
-    protected void deleteResume(Object index) {
-        if (size - 1 - (Integer) index >= 0) {
-            deleteElement((Integer) index);
+    protected void deleteResume(Object searchKey) {
+        if (size - 1 - (Integer) searchKey >= 0) {
+            deleteElement((Integer) searchKey);
             storage[size - 1] = null;
             size--;
         }
@@ -57,4 +61,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void insertElement(Resume resume, int index);
 
     protected abstract void deleteElement(int index);
+
+
 }
