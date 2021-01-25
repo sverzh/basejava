@@ -2,9 +2,12 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MapResumeStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage<Resume> {
 
     private Map<String, Resume> map = new HashMap<>();
 
@@ -25,27 +28,27 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object resume) {
+    protected boolean isExist(Resume resume) {
         return map.containsValue(resume);
     }
 
     @Override
-    protected Resume getResume(Object resume) {
-        return (Resume) resume;
+    protected Resume getResume(Resume resume) {
+        return resume;
     }
 
     @Override
-    protected void updateResume(Resume resume, Object r) {
+    protected void updateResume(Resume resume, Resume r) {
         map.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void deleteResume(Object searchKey) {
-        map.remove(((Resume) searchKey).getUuid());
+    protected void deleteResume(Resume searchKey) {
+        map.remove(searchKey.getUuid());
     }
 
     @Override
-    protected void addResume(Resume resume, Object searchKey) {
+    protected void addResume(Resume resume, Resume searchKey) {
         map.put(resume.getUuid(), resume);
     }
 
