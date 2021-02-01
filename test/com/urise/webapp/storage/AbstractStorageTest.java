@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.ResumeTestData;
 import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.Resume;
@@ -24,10 +25,19 @@ public abstract class AbstractStorageTest {
 
     @Before
     public void setUp() throws Exception {
+        Resume resume1 = new ResumeTestData().fillResume(UUID_1,"Petrov");
+        System.out.println(resume1);
+        Resume resume5 = new ResumeTestData().fillResume(UUID_1,"Petrov");
+        System.out.println(resume5);
+        System.out.println(resume1.equals(resume5));
+        Resume resume2 = new Resume(UUID_2, "Ivanov");
+        Resume resume6 = new Resume(UUID_2, "Ivanov");
+        System.out.println(resume2.equals(resume6));
+        Resume resume3 = new Resume(UUID_3, "Sidorov");
         storage.clear();
-        storage.save(new Resume(UUID_1, "Petrov"));
-        storage.save(new Resume(UUID_2, "Ivanov"));
-        storage.save(new Resume(UUID_3, "Sidorov"));
+        storage.save(resume1);
+        storage.save(resume2);
+        storage.save(resume3);
     }
 
     @Test
@@ -59,7 +69,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = ExistStorageException.class)
     public void saveExist() {
-        storage.save(new Resume(UUID_1, "Petrov"));
+        storage.save(new ResumeTestData().fillResume(UUID_1,"Petrov"));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -78,7 +88,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() {
         List<Resume> list = storage.getAllSorted();
-        Assert.assertTrue(list.contains(new Resume(UUID_1, "Petrov")));
+        System.out.println(list);
+        Assert.assertTrue(list.contains(new Resume(UUID_1,"Petrov")));
         Assert.assertTrue(list.contains(new Resume(UUID_2, "Ivanov")));
         Assert.assertTrue(list.contains(new Resume(UUID_3, "Sidorov")));
     }
@@ -90,7 +101,8 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-        Assert.assertEquals(new Resume(UUID_2, "Ivanov"), storage.get(UUID_2));
+        Assert.assertEquals(new ResumeTestData().fillResume(UUID_2, "Ivanov"), storage.get(UUID_2));
+        System.out.println(storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)

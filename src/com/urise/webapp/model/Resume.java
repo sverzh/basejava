@@ -1,6 +1,8 @@
 package com.urise.webapp.model;
 
 import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -9,50 +11,45 @@ import java.util.UUID;
 public class Resume implements Comparable<Resume> {
     private final String uuid;
     private final String fullName;
-    private EnumMap<ContactType, String> contactsMap = new EnumMap<>(ContactType.class);
-    private EnumMap<SectionType, AbstractSection> sectionMap = new EnumMap<>(SectionType.class);
+    private Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid must not be null");
+        Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
 
     public void addContact(ContactType type, String contact) {
-        contactsMap.put(type, contact);
+        contacts.put(type, contact);
     }
 
     public void addSection(SectionType type, AbstractSection section) {
-        sectionMap.put(type, section);
+
+        sections.put(type, section);
     }
 
-    public EnumMap<ContactType, String> getContactsMap() {
-        return contactsMap;
+    public Map<ContactType, String> getContacts() {
+        return contacts;
     }
 
-    public EnumMap<SectionType, AbstractSection> getSectionMap() {
-        return sectionMap;
+    public Map<SectionType, AbstractSection> getSections() {
+        return sections;
     }
 
-//    @Override
-//    public String toString() {
-//        StringBuilder fullResume = new StringBuilder();
-//        fullResume.append(fullName+"\n");
-//        for (Map.Entry<ContactType,String> entry: contactsMap.entrySet()){
-//            fullResume.append(entry.getKey()+ " - "+ entry.getValue()+"\n");
-//        }
-//        fullResume.append("\n");
-//        for (Map.Entry<SectionType,AbstractSection> entry: sectionMap.entrySet()
-//             ) {
-//            fullResume.append(entry.getKey().getTittle()+"\n");
-//            fullResume.append(entry.getValue()+"\n");
-//        }
-//
-//        return fullResume.toString();
-//    }
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public AbstractSection getSection(SectionType type) {
+        return sections.get(type);
+    }
+
 
     public String getUuid() {
         return uuid;
@@ -66,13 +63,22 @@ public class Resume implements Comparable<Resume> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid);
+
+        if (!uuid.equals(resume.uuid)) return false;
+        if (!fullName.equals(resume.fullName)) return false;
+        if (!contacts.equals(resume.contacts)) return false;
+        return sections.equals(resume.sections);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        int result = uuid.hashCode();
+        result = 31 * result + fullName.hashCode();
+        result = 31 * result + contacts.hashCode();
+        result = 31 * result + sections.hashCode();
+        return result;
     }
 
     @Override

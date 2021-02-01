@@ -1,10 +1,11 @@
 package com.urise.webapp.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListSection extends AbstractSection {
     private String title;
-    private ArrayList<String> listSection = new ArrayList<>();
+    private List<String> listSection = new ArrayList<>();
 
     public ListSection(String title) {
         this.title = title;
@@ -14,7 +15,7 @@ public class ListSection extends AbstractSection {
         return title;
     }
 
-    public ArrayList<String> getListSection() {
+    public List<String> getListSection() {
         return listSection;
     }
 
@@ -32,4 +33,5 @@ public class ListSection extends AbstractSection {
         }
         return builder.toString();
     }
+
 }
