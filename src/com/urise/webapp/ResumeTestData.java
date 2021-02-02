@@ -8,11 +8,7 @@ import java.time.Month;
 
 public class ResumeTestData {
 
-
     public static void main(String[] args) {
-        Resume resume1 = new ResumeTestData().fillResume("111", "111");
-        Resume resume2 = new ResumeTestData().fillResume("111", "111");
-        System.out.println(resume1.equals(resume2));
     }
 
     public Resume fillResume(String uuid, String fullName) {
@@ -25,16 +21,15 @@ public class ResumeTestData {
         resume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
-        TextSection textSection1 = new TextSection("Позиция");
+        TextSection textSection1 = new TextSection();
         textSection1.setText("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
 
-        TextSection textSection2 = new TextSection("Личные качества");
+        TextSection textSection2 = new TextSection();
         textSection2.setText("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
         resume.addSection(SectionType.OBJECTIVE, textSection1);
         resume.addSection(SectionType.PERSONAL, textSection2);
 
-
-        ListSection listSection1 = new ListSection("Достижения");
+        ListSection listSection1 = new ListSection();
         listSection1.addToListSection("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.");
         listSection1.addToListSection("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.");
 

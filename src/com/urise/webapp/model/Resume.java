@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Initial resume class
- */
+
 public class Resume implements Comparable<Resume> {
     private final String uuid;
     private final String fullName;
@@ -30,26 +28,8 @@ public class Resume implements Comparable<Resume> {
     }
 
     public void addSection(SectionType type, AbstractSection section) {
-
         sections.put(type, section);
     }
-
-    public Map<ContactType, String> getContacts() {
-        return contacts;
-    }
-
-    public Map<SectionType, AbstractSection> getSections() {
-        return sections;
-    }
-
-    public String getContact(ContactType type) {
-        return contacts.get(type);
-    }
-
-    public AbstractSection getSection(SectionType type) {
-        return sections.get(type);
-    }
-
 
     public String getUuid() {
         return uuid;
@@ -68,8 +48,7 @@ public class Resume implements Comparable<Resume> {
 
         if (!uuid.equals(resume.uuid)) return false;
         if (!fullName.equals(resume.fullName)) return false;
-        if (!contacts.equals(resume.contacts)) return false;
-        return sections.equals(resume.sections);
+        return contacts.equals(resume.contacts);
     }
 
     @Override
@@ -77,7 +56,6 @@ public class Resume implements Comparable<Resume> {
         int result = uuid.hashCode();
         result = 31 * result + fullName.hashCode();
         result = 31 * result + contacts.hashCode();
-        result = 31 * result + sections.hashCode();
         return result;
     }
 

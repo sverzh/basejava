@@ -2,18 +2,9 @@ package com.urise.webapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class OrganizationSection extends AbstractSection {
     protected List<Organization> organizations = new ArrayList<>();
-
-    public OrganizationSection() {
-    }
-
-    public OrganizationSection(List<Organization> organizations) {
-        Objects.requireNonNull(organizations, "organizations must not be null");
-        this.organizations = organizations;
-    }
 
     public void addOrganization(Organization organization) {
         if (OrganizationExist(organization) == -1) {
@@ -29,11 +20,6 @@ public class OrganizationSection extends AbstractSection {
         }
         return -1;
     }
-
-    public List<Organization> getOrganizations() {
-        return organizations;
-    }
-
 
     @Override
     public String toString() {

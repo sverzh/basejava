@@ -27,11 +27,12 @@ public class MainFile {
 
     public static void PrintFiles(File file) {
         File[] list = file.listFiles();
-        for (File a : list
-        ) {
-            System.out.println(a);
-            if (a.isDirectory()) {
-                PrintFiles(a);
+        if (list != null) {
+            for (File a : list) {
+                System.out.println(a);
+                if (a.isDirectory()) {
+                    PrintFiles(a);
+                }
             }
         }
     }
