@@ -2,14 +2,15 @@ package com.urise.webapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OrganizationSection extends AbstractSection {
-    protected List<Organization> organizations = new ArrayList<>();
+    private List<Organization> organizations = new ArrayList<>();
 
     public void addOrganization(Organization organization) {
         if (OrganizationExist(organization) == -1) {
             organizations.add(organization);
-        } else organizations.get(OrganizationExist(organization)).periodList.add(organization.period);
+        } else organizations.get(OrganizationExist(organization)).periodList.add(organization.periodList.get(0));
     }
 
     private int OrganizationExist(Organization organization) {
@@ -19,6 +20,19 @@ public class OrganizationSection extends AbstractSection {
             }
         }
         return -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationSection that = (OrganizationSection) o;
+        return organizations.equals(that.organizations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(organizations);
     }
 
     @Override

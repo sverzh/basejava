@@ -35,20 +35,20 @@ public class ResumeTestData {
 
         resume.addSection(SectionType.ACHIEVEMENT, listSection1);
 
-        OrganizationSection organization = new OrganizationSection();
+        OrganizationSection organizationSection = new OrganizationSection();
         Organization organization1 = new Organization("Java Online Projects", "url", DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
         Organization organization2 = new Organization("Java Online Projects", "url", DateUtil.of(2014, Month.OCTOBER), DateUtil.of(2016, Month.JANUARY), "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.");
         Organization organization3 = new Organization("RIT Center", "url", DateUtil.of(2012, Month.APRIL), DateUtil.of(2012, Month.MARCH), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
         Organization organization4 = new Organization("Java Online Projects", "url", DateUtil.of(2010, Month.OCTOBER), DateUtil.of(2011, Month.JANUARY), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
         Organization organization5 = new Organization("RIT Center", "url", DateUtil.of(2012, Month.APRIL), DateUtil.of(2012, Month.MARCH), "Java архитектор", "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python");
 
-        organization.addOrganization(organization1);
-        organization.addOrganization(organization2);
-        organization.addOrganization(organization3);
-        organization.addOrganization(organization4);
-        organization.addOrganization(organization5);
+        organizationSection.addOrganization(organization1);
+        organizationSection.addOrganization(organization2);
+        organizationSection.addOrganization(organization3);
+        organizationSection.addOrganization(organization4);
+        organizationSection.addOrganization(organization5);
 
-        resume.addSection(SectionType.EXPERIENCE, organization);
+        resume.addSection(SectionType.EXPERIENCE, organizationSection);
 
         OrganizationSection study = new OrganizationSection();
         Organization organization6 = new Organization("Coursera", "url", DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "", "\"Functional Programming Principles in Scala\" by Martin Odersky");
@@ -57,17 +57,4 @@ public class ResumeTestData {
         return resume;
     }
 
-//        System.out.println(resume.getFullName());
-//        for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()
-//        ) {
-//            System.out.println(entry.getKey() + " - " + entry.getValue());
-//        }
-//        System.out.println();
-//        for (Map.Entry<SectionType, AbstractSection> entry : resume.getSections().entrySet()
-//        ) {
-//            System.out.println(entry.getKey().getTittle());
-//            System.out.println();
-//            System.out.println(entry.getValue());
-//            System.out.println();
-//        }
 }

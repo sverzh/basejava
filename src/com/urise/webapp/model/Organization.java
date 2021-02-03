@@ -6,40 +6,37 @@ import java.util.List;
 import java.util.Objects;
 
 public class Organization {
+    private final Link homePage;
     protected List<Period> periodList = new ArrayList<>();
-    String organization;
-    Period period;
 
     public Organization(String organization, String url, LocalDate beginDate, LocalDate finishDate, String title, String description) {
         Objects.requireNonNull(organization, "organization must not be null");
-        Link homePage = new Link(organization, url);
-        this.organization = organization;
-        period = new Period(beginDate, finishDate, title, description);
+        homePage = new Link(organization, url);
+        Period period = new Period(beginDate, finishDate, title, description);
         periodList.add(period);
     }
 
     public String getOrganization() {
-        return organization;
+        return homePage.getName();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Organization that = (Organization) o;
-
-        return organization.equals(that.organization);
+        return periodList.equals(that.periodList) &&
+                homePage.equals(that.homePage);
     }
 
     @Override
     public int hashCode() {
-        return organization.hashCode();
+        return Objects.hash(periodList, homePage);
     }
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(organization + "\n");
+        StringBuilder stringBuilder = new StringBuilder(homePage.getName() + "\n");
         for (Period a : periodList
         ) {
             stringBuilder.append(a.getBeginDate() + " - " + a.getFinishDate() + "\n"
