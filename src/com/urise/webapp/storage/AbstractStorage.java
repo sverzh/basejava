@@ -12,19 +12,19 @@ public abstract class AbstractStorage<SK> implements Storage {
     private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
     public void save(Resume resume) {
-        LOG.info("Save "+resume);
+        LOG.info("Save " + resume);
         SK searchKey = getNotExistedSearchKey(resume.getUuid());
         addResume(resume, searchKey);
     }
 
     public void delete(String uuid) {
-        LOG.info("Delete "+uuid);
+        LOG.info("Delete " + uuid);
         SK searchKey = getExistedSearchKey(uuid);
         deleteResume(searchKey);
     }
 
     public void update(Resume resume) {
-        LOG.info("Update "+resume);
+        LOG.info("Update " + resume);
         String uuid = resume.getUuid();
         SK searchKey = getExistedSearchKey(uuid);
         updateResume(resume, searchKey);
@@ -32,7 +32,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     }
 
     public Resume get(String uuid) {
-        LOG.info("Get "+uuid);
+        LOG.info("Get " + uuid);
         SK searchKey = getExistedSearchKey(uuid);
         return getResume(searchKey);
     }
@@ -54,13 +54,13 @@ public abstract class AbstractStorage<SK> implements Storage {
         }
         return searchKey;
     }
+
     public List<Resume> getAllSorted() {
         LOG.info("getAllSorted");
-        List<Resume>list = getList();
+        List<Resume> list = getList();
         Collections.sort(list);
         return list;
     }
-
 
     protected abstract List<Resume> getList();
 

@@ -16,7 +16,7 @@ public class MainFile {
         System.out.println(dir.isDirectory());
         File[] list = dir.listFiles();
         if (list != null) {
-            PrintFiles(dir);
+            PrintFiles(dir,"");
         }
         try (FileInputStream fis = new FileInputStream(filepath)) {
             System.out.println(fis.read());
@@ -25,14 +25,18 @@ public class MainFile {
         }
     }
 
-    public static void PrintFiles(File file) {
+    public static void PrintFiles(File file, String indent) {
         File[] list = file.listFiles();
-        if (list != null) {
+            if (list != null) {
             for (File a : list) {
-                System.out.println(a);
                 if (a.isDirectory()) {
-                    PrintFiles(a);
+                    System.out.println(indent+a);
+                    PrintFiles(a,indent+"     ");
                 }
+                else {
+                    System.out.println(indent+a);
+                }
+
             }
         }
     }
