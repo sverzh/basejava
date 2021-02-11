@@ -57,12 +57,12 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     public List<Resume> getAllSorted() {
         LOG.info("getAllSorted");
-        List<Resume> list = getList();
+        List<Resume> list = getAll();
         Collections.sort(list);
         return list;
     }
 
-    protected abstract List<Resume> getList();
+    protected abstract List<Resume> getAll();
 
     protected abstract boolean isExist(SK searchKey);
 
@@ -75,5 +75,4 @@ public abstract class AbstractStorage<SK> implements Storage {
     protected abstract void addResume(Resume resume, SK searchKey);
 
     protected abstract SK getSearchKey(String uuid);
-
 }

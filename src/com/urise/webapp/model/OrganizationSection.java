@@ -11,7 +11,9 @@ public class OrganizationSection extends AbstractSection {
     public void addOrganization(Organization organization) {
         if (OrganizationExist(organization) == -1) {
             organizations.add(organization);
-        } else organizations.get(OrganizationExist(organization)).periodList.add(organization.periodList.get(0));
+        } else {
+            organizations.get(OrganizationExist(organization)).periodList.add(organization.periodList.get(0));
+        }
     }
 
     private int OrganizationExist(Organization organization) {
@@ -40,8 +42,7 @@ public class OrganizationSection extends AbstractSection {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        for (Organization periodSection : organizations
-        ) {
+        for (Organization periodSection : organizations) {
             builder.append(periodSection + "\n");
         }
         return builder.toString();

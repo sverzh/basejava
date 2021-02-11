@@ -44,6 +44,5 @@ public class MainCollections {
         map.put(UUID_1, RESUME_1);
         map.put(UUID_2, RESUME_2);
         map.put(UUID_3, RESUME_3);
-
     }
 }

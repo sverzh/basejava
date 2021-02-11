@@ -2,18 +2,19 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
+import com.urise.webapp.storage.serialize.Serialize;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FileStorage extends AbstractStorage<File>{
+public class FileStorage extends AbstractStorage<File> {
 
+    private Serialize streamSerialize;
     private File directory;
-    StreamSerialize streamSerialize;
 
-    protected FileStorage(File directory,StreamSerialize streamSerialize) {
+    protected FileStorage(File directory, Serialize streamSerialize) {
         Objects.requireNonNull(directory, "directory must not be null");
         this.streamSerialize = streamSerialize;
         if (!directory.isDirectory()) {
@@ -25,12 +26,15 @@ public class FileStorage extends AbstractStorage<File>{
     }
 
     @Override
-    protected List<Resume> getList() {
-        File[] files = directory.listFiles();
+    protected List<Resume> getAll() {
         List<Resume> list = new ArrayList<>();
-        for (File file : files
-        ) {
-            list.add(getResume(file));
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                list.add(getResume(file));
+            }
+        } else {
+            throw new StorageException("Directory is empty", null);
         }
         return list;
     }
@@ -69,7 +73,7 @@ public class FileStorage extends AbstractStorage<File>{
     protected void addResume(Resume resume, File file) {
         try {
             file.createNewFile();
-            streamSerialize.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            updateResume(resume, file);
         } catch (IOException e) {
             throw new StorageException("IO error", file.getName(), e);
         }
@@ -84,10 +88,10 @@ public class FileStorage extends AbstractStorage<File>{
     public void clear() {
         File[] files = directory.listFiles();
         if (files != null)
-            for (File file : files
-            ) {
+            for (File file : files) {
                 deleteResume(file);
             }
+        else throw new StorageException("Directory is empty", null);
     }
 
     @Override

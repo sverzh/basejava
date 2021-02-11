@@ -17,7 +17,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         size = 0;
     }
 
-    public List<Resume> getList() {
+    public List<Resume> getAll() {
         return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
@@ -58,6 +58,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected abstract void insertElement(Resume resume, int index);
 
     protected abstract void deleteElement(int index);
-
-
 }

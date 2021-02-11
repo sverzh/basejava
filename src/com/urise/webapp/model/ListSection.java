@@ -29,8 +29,7 @@ public class ListSection extends AbstractSection {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        for (String string : listSection
-        ) {
+        for (String string : listSection) {
             builder.append(string);
         }
         return builder.toString();

@@ -16,6 +16,5 @@ public class MainReflection {
         Method method = Resume.class.getMethod("toString");
         System.out.println(method.invoke(r));
         System.out.println(r);
-
     }
 }

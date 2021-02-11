@@ -8,9 +8,6 @@ import java.time.Month;
 
 public class ResumeTestData {
 
-    public static void main(String[] args) {
-    }
-
     public Resume fillResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
         resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
@@ -56,5 +53,4 @@ public class ResumeTestData {
         resume.addSection(SectionType.EDUCATION, study);
         return resume;
     }
-
 }

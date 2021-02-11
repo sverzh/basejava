@@ -17,6 +17,4 @@ public enum SectionType {
     public String getTittle() {
         return tittle;
     }
-
-
 }

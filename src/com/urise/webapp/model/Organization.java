@@ -39,15 +39,14 @@ public class Organization implements Serializable {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder(homePage.getName() + "\n");
-        for (Period a : periodList
-        ) {
+        for (Period a : periodList) {
             stringBuilder.append(a.getBeginDate() + " - " + a.getFinishDate() + "\n"
                     + a.getTitle() + "\n" + a.getDescription() + "\n");
         }
         return stringBuilder.toString();
     }
 
-    public static class Period implements Serializable{
+    public static class Period implements Serializable {
         private final static long serialVersionUID = 1L;
         private final LocalDate beginDate;
         private final LocalDate finishDate;

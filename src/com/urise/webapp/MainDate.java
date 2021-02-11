@@ -12,15 +12,14 @@ public class MainDate {
         long start = System.currentTimeMillis();
         Date date = new Date();
         System.out.println(date);
-        System.out.println(System.currentTimeMillis()-start);
+        System.out.println(System.currentTimeMillis() - start);
         LocalDate ld = LocalDate.now();
         LocalTime lt = LocalTime.now();
-        LocalDateTime ldt = LocalDateTime.of(ld,lt);
+        LocalDateTime ldt = LocalDateTime.of(ld, lt);
         System.out.println(ldt);
         SimpleDateFormat sdf = new SimpleDateFormat("YY/MM/dd");
         System.out.println(sdf.format(date));
-        DateTimeFormatter dtf=DateTimeFormatter.ofPattern("YY/MM/dd");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("YY/MM/dd");
         System.out.println(dtf.format(ldt));
     }
-
 }
