@@ -8,6 +8,13 @@ public class OrganizationSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
     private List<Organization> organizations = new ArrayList<>();
 
+    public OrganizationSection() {
+    }
+
+    public List<Organization> getOrganizations() {
+        return organizations;
+    }
+
     public void addOrganization(Organization organization) {
         if (OrganizationExist(organization) == -1) {
             organizations.add(organization);

@@ -1,10 +1,10 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.storage.serialize.StreamSerialize;
+import com.urise.webapp.storage.serialize.StreamSerializer;
 
 public class FileStorageTest extends AbstractStorageTest {
 
     public FileStorageTest() {
-        super(new FileStorage(STORAGE_DIR, new StreamSerialize()));
+        super(new FileStorage(STORAGE_DIR, new StreamSerializer()));
     }
 }

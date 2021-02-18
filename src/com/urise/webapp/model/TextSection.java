@@ -6,6 +6,13 @@ public class TextSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
     private String text;
 
+    public TextSection() {
+    }
+
+    public String getText() {
+        return text;
+    }
+
     public void setText(String text) {
         Objects.requireNonNull(text, "text must not be null");
         this.text = text;

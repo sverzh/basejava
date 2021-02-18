@@ -1,15 +1,25 @@
 package com.urise.webapp.model;
 
+import com.urise.webapp.Util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private final static long serialVersionUID = 1L;
-    private final Link homePage;
     protected List<Period> periodList = new ArrayList<>();
+    private Link homePage;
+
+    public Organization() {
+    }
 
     public Organization(String organization, String url, LocalDate beginDate, LocalDate finishDate, String title, String description) {
         Objects.requireNonNull(organization, "organization must not be null");
@@ -18,8 +28,16 @@ public class Organization implements Serializable {
         periodList.add(period);
     }
 
+    public String getHomePage() {
+        return homePage.getUrl();
+    }
+
     public String getOrganization() {
         return homePage.getName();
+    }
+
+    public List<Period> getPeriodList() {
+        return periodList;
     }
 
     @Override
@@ -46,12 +64,18 @@ public class Organization implements Serializable {
         return stringBuilder.toString();
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
         private final static long serialVersionUID = 1L;
-        private final LocalDate beginDate;
-        private final LocalDate finishDate;
-        private final String title;
-        private final String description;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate beginDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate finishDate;
+        private String title;
+        private String description;
+
+        public Period() {
+        }
 
         public Period(LocalDate beginDate, LocalDate finishDate, String title, String description) {
             Objects.requireNonNull(beginDate, "beginDate must not be null");

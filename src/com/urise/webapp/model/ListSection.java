@@ -1,8 +1,11 @@
 package com.urise.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 
 public class ListSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
@@ -10,6 +13,13 @@ public class ListSection extends AbstractSection {
 
     public void addToListSection(String string) {
         listSection.add(string);
+    }
+
+    public ListSection() {
+    }
+
+    public List<String> getListSection() {
+        return listSection;
     }
 
     @Override

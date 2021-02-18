@@ -92,12 +92,10 @@ public class FileStorage extends AbstractStorage<File> {
     }
 
     private File[] getFilesList() {
-        File[] list = directory.listFiles();
-        if (list != null) {
-            return list;
-        } else {
+        if (directory.listFiles() == null) {
             throw new StorageException("Directory read error", null);
         }
+        return directory.listFiles();
     }
 }
 
