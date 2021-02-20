@@ -23,35 +23,38 @@ public class DataStreamSerializer implements Serialize {
             Map<SectionType, AbstractSection> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                if (entry.getValue() instanceof TextSection) {
-                    dos.writeUTF("TextSection");
-                    dos.writeUTF(((TextSection) entry.getValue()).getText());
-                }
-                if (entry.getValue() instanceof ListSection) {
-                    dos.writeUTF("ListSection");
-                    List<String> list = ((ListSection) entry.getValue()).getListSection();
-                    dos.writeInt(list.size());
-                    for (String str : list) {
-                        dos.writeUTF(str);
-                    }
-                }
-                if (entry.getValue() instanceof OrganizationSection) {
-                    dos.writeUTF("OrganizationSection");
-                    List<Organization> organizationslist = ((OrganizationSection) entry.getValue()).getOrganizations();
-                    dos.writeInt(organizationslist.size());
-                    for (Organization org : organizationslist) {
-                        dos.writeUTF(org.getOrganization());
-                        dos.writeUTF(org.getHomePage());
-                        List<Organization.Period> periods = org.getPeriodList();
-                        dos.writeInt(periods.size());
-                        for (Organization.Period per : periods) {
-                            dos.writeUTF(per.getBeginDate().toString());
-                            dos.writeUTF(per.getFinishDate().toString());
-                            dos.writeUTF(per.getTitle());
-                            dos.writeUTF(per.getDescription());
+                SectionType sectiontype = entry.getKey();
+                dos.writeUTF(sectiontype.name());
+                switch (sectiontype) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        dos.writeUTF(((TextSection) entry.getValue()).getText());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        List<String> list = ((ListSection) entry.getValue()).getListSection();
+                        dos.writeInt(list.size());
+                        for (String str : list) {
+                            dos.writeUTF(str);
                         }
-                    }
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Organization> organizationslist = ((OrganizationSection) entry.getValue()).getOrganizations();
+                        dos.writeInt(organizationslist.size());
+                        for (Organization org : organizationslist) {
+                            dos.writeUTF(org.getOrganization());
+                            dos.writeUTF(org.getHomePage());
+                            List<Organization.Period> periods = org.getPeriodList();
+                            dos.writeInt(periods.size());
+                            for (Organization.Period per : periods) {
+                                dos.writeUTF(per.getBeginDate().toString());
+                                dos.writeUTF(per.getFinishDate().toString());
+                                dos.writeUTF(per.getTitle());
+                                dos.writeUTF(per.getDescription());
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -69,35 +72,39 @@ public class DataStreamSerializer implements Serialize {
             }
             size = dis.readInt();
             for (int i = 0; i < size; i++) {
-                String section = dis.readUTF();
-                String str = dis.readUTF();
-                if (str.equals("TextSection")) {
-                    TextSection textSection = new TextSection();
-                    textSection.setText(dis.readUTF());
-                    resume.addSection(SectionType.valueOf(section), textSection);
-                }
-                if (str.equals(("ListSection"))) {
-                    int size1 = dis.readInt();
-                    ListSection listSection = new ListSection();
-                    for (int j = 0; j < size1; j++) {
-                        listSection.addToListSection(dis.readUTF());
-                    }
-                    resume.addSection(SectionType.valueOf(section), listSection);
-                }
-                if (str.equals(("OrganizationSection"))) {
-                    int size1 = dis.readInt();
-                    System.out.println(size1);
-                    OrganizationSection organizationSection = new OrganizationSection();
-                    for (int j = 0; j < size1; j++) {
-                        String organizationName = dis.readUTF();
-                        String url = dis.readUTF();
-                        int periodSize = dis.readInt();
-                        for (int k = 0; k < periodSize; k++) {
-                            Organization organization = new Organization(organizationName, url, LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF());
-                            organizationSection.addOrganization(organization);
+                SectionType sectiontype = SectionType.valueOf(dis.readUTF());
+                switch (sectiontype) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        TextSection textSection = new TextSection();
+                        textSection.setText(dis.readUTF());
+                        resume.addSection(sectiontype, textSection);
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        int size1 = dis.readInt();
+                        ListSection listSection = new ListSection();
+                        for (int j = 0; j < size1; j++) {
+                            listSection.addToListSection(dis.readUTF());
                         }
-                    }
-                    resume.addSection(SectionType.valueOf(section), organizationSection);
+                        resume.addSection(sectiontype, listSection);
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        int size2 = dis.readInt();
+                        System.out.println(size2);
+                        OrganizationSection organizationSection = new OrganizationSection();
+                        for (int j = 0; j < size2; j++) {
+                            String organizationName = dis.readUTF();
+                            String url = dis.readUTF();
+                            int periodSize = dis.readInt();
+                            for (int k = 0; k < periodSize; k++) {
+                                Organization organization = new Organization(organizationName, url, LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF());
+                                organizationSection.addOrganization(organization);
+                            }
+                        }
+                        resume.addSection(sectiontype, organizationSection);
+                        break;
                 }
             }
             return resume;

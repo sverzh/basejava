@@ -84,7 +84,7 @@ public class Organization implements Serializable {
             this.beginDate = beginDate;
             this.finishDate = finishDate;
             this.title = title;
-            this.description = description;
+            this.description = description == null ? "" : description;
         }
 
         public LocalDate getBeginDate() {
