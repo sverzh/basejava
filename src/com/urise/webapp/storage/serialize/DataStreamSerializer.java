@@ -4,8 +4,11 @@ import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 
 public class DataStreamSerializer implements Serialize {
 
@@ -15,14 +18,13 @@ public class DataStreamSerializer implements Serialize {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
-            dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : resume.getContacts().entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            writeWithException(dos, contacts.entrySet(), entry -> {
+                        dos.writeUTF(entry.getKey().name());
+                        dos.writeUTF(entry.getValue());
+                    }
+            );
             Map<SectionType, AbstractSection> sections = resume.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+            writeWithException(dos, sections.entrySet(), entry -> {
                 SectionType sectiontype = entry.getKey();
                 dos.writeUTF(sectiontype.name());
                 switch (sectiontype) {
@@ -41,22 +43,20 @@ public class DataStreamSerializer implements Serialize {
                     case EXPERIENCE:
                     case EDUCATION:
                         List<Organization> organizationslist = ((OrganizationSection) entry.getValue()).getOrganizations();
-                        dos.writeInt(organizationslist.size());
-                        for (Organization org : organizationslist) {
+                        writeWithException(dos, organizationslist, org -> {
                             dos.writeUTF(org.getOrganization());
                             dos.writeUTF(org.getHomePage());
                             List<Organization.Period> periods = org.getPeriodList();
-                            dos.writeInt(periods.size());
-                            for (Organization.Period per : periods) {
+                            writeWithException(dos, periods, per -> {
                                 dos.writeUTF(per.getBeginDate().toString());
                                 dos.writeUTF(per.getFinishDate().toString());
                                 dos.writeUTF(per.getTitle());
                                 dos.writeUTF(per.getDescription());
-                            }
-                        }
+                            });
+                        });
                         break;
                 }
-            }
+            });
         }
     }
 
@@ -108,6 +108,19 @@ public class DataStreamSerializer implements Serialize {
                 }
             }
             return resume;
+
         }
+    }
+
+    private <T> void writeWithException(DataOutputStream dos, Collection<T> collection, Writer<T> writer) throws IOException {
+        Objects.requireNonNull(collection);
+        dos.writeInt(collection.size());
+        for (T item : collection) {
+            writer.write(item);
+        }
+    }
+
+    private interface Writer<T> {
+        void write(T t) throws IOException;
     }
 }
