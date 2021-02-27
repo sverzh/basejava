@@ -32,18 +32,18 @@ public class DataStreamSerializer implements Serialize {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         List<String> list = ((ListSection) entry.getValue()).getListSection();
-                        writeWithException(dos, list, str -> dos.writeUTF(str));
+                        writeWithException(dos, list, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Organization> organizationslist = ((OrganizationSection) entry.getValue()).getOrganizations();
-                        writeWithException(dos, organizationslist, org -> {
+                        List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizations();
+                        writeWithException(dos, organizationList, org -> {
                             dos.writeUTF(org.getOrganization());
                             dos.writeUTF(org.getHomePage());
                             List<Organization.Period> periods = org.getPeriodList();
                             writeWithException(dos, periods, per -> {
-                                dos.writeUTF(per.getBeginDate().toString());
-                                dos.writeUTF(per.getFinishDate().toString());
+                                writeLocalDate(dos, per.getBeginDate());
+                                writeLocalDate(dos, per.getFinishDate());
                                 dos.writeUTF(per.getTitle());
                                 dos.writeUTF(per.getDescription());
                             });
@@ -82,7 +82,7 @@ public class DataStreamSerializer implements Serialize {
                             String organizationName = dis.readUTF();
                             String url = dis.readUTF();
                             readOne(dis, () -> {
-                                Organization organization = new Organization(organizationName, url, LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF());
+                                Organization organization = new Organization(organizationName, url, readLocalDate(dis), readLocalDate(dis), dis.readUTF(), dis.readUTF());
                                 organizationSection.addOrganization(organization);
                             });
                         });
@@ -116,6 +116,16 @@ public class DataStreamSerializer implements Serialize {
         for (int i = 0; i < size; i++) {
             reader.read();
         }
+    }
+
+    private void writeLocalDate(DataOutputStream dos, LocalDate localDate) throws IOException {
+        dos.writeInt(localDate.getYear());
+        dos.writeInt(localDate.getMonth().getValue());
+        dos.writeInt(localDate.getDayOfMonth());
+    }
+
+    private LocalDate readLocalDate(DataInputStream dis) throws IOException {
+        return LocalDate.of(dis.readInt(), dis.readInt(), dis.readInt());
     }
 
     private interface Writer<T> {
