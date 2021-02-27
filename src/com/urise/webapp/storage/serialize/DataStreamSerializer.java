@@ -4,10 +4,7 @@ import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 public class DataStreamSerializer implements Serialize {
@@ -35,10 +32,7 @@ public class DataStreamSerializer implements Serialize {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         List<String> list = ((ListSection) entry.getValue()).getListSection();
-                        dos.writeInt(list.size());
-                        for (String str : list) {
-                            dos.writeUTF(str);
-                        }
+                        writeWithException(dos, list, str -> dos.writeUTF(str));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
@@ -66,12 +60,8 @@ public class DataStreamSerializer implements Serialize {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            size = dis.readInt();
-            for (int i = 0; i < size; i++) {
+            readOne(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readOne(dis, () -> {
                 SectionType sectiontype = SectionType.valueOf(dis.readUTF());
                 switch (sectiontype) {
                     case PERSONAL:
@@ -82,33 +72,25 @@ public class DataStreamSerializer implements Serialize {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        int size1 = dis.readInt();
-                        ListSection listSection = new ListSection();
-                        for (int j = 0; j < size1; j++) {
-                            listSection.addToListSection(dis.readUTF());
-                        }
+                        ListSection listSection = new ListSection(readWithException(dis, dis::readUTF));
                         resume.addSection(sectiontype, listSection);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        int size2 = dis.readInt();
-                        System.out.println(size2);
                         OrganizationSection organizationSection = new OrganizationSection();
-                        for (int j = 0; j < size2; j++) {
+                        readOne(dis, () -> {
                             String organizationName = dis.readUTF();
                             String url = dis.readUTF();
-                            int periodSize = dis.readInt();
-                            for (int k = 0; k < periodSize; k++) {
+                            readOne(dis, () -> {
                                 Organization organization = new Organization(organizationName, url, LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF(), dis.readUTF());
                                 organizationSection.addOrganization(organization);
-                            }
-                        }
+                            });
+                        });
                         resume.addSection(sectiontype, organizationSection);
                         break;
                 }
-            }
+            });
             return resume;
-
         }
     }
 
@@ -120,7 +102,31 @@ public class DataStreamSerializer implements Serialize {
         }
     }
 
+    private <T> List<T> readWithException(DataInputStream dis, Reader<T> reader) throws IOException {
+        int size = dis.readInt();
+        List<T> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            list.add(reader.read());
+        }
+        return list;
+    }
+
+    private void readOne(DataInputStream dis, SimpleReader reader) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            reader.read();
+        }
+    }
+
     private interface Writer<T> {
         void write(T t) throws IOException;
+    }
+
+    private interface Reader<T> {
+        T read() throws IOException;
+    }
+
+    private interface SimpleReader {
+        void read() throws IOException;
     }
 }

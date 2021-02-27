@@ -1,7 +1,5 @@
 package com.urise.webapp.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,11 +9,15 @@ public class ListSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
     private List<String> listSection = new ArrayList<>();
 
-    public void addToListSection(String string) {
-        listSection.add(string);
+    public ListSection() {
     }
 
-    public ListSection() {
+    public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "items must not be null");
+        this.listSection = items;    }
+
+    public void addToListSection(String string) {
+        listSection.add(string);
     }
 
     public List<String> getListSection() {
