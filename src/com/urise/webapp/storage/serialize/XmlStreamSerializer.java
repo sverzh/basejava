@@ -1,6 +1,6 @@
 package com.urise.webapp.storage.serialize;
 
-import com.urise.webapp.Util.XmlParser;
+import com.urise.webapp.util.XmlParser;
 import com.urise.webapp.model.*;
 
 import java.io.*;

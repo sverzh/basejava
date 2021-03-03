@@ -1,6 +1,6 @@
 package com.urise.webapp;
 
-import com.urise.webapp.Util.DateUtil;
+import com.urise.webapp.util.DateUtil;
 import com.urise.webapp.model.*;
 
 import java.time.LocalDate;

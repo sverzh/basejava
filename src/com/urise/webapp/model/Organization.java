@@ -1,6 +1,6 @@
 package com.urise.webapp.model;
 
-import com.urise.webapp.Util.LocalDateAdapter;
+import com.urise.webapp.util.LocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

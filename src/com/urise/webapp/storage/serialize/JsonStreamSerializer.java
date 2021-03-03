@@ -1,7 +1,7 @@
 package com.urise.webapp.storage.serialize;
 
 
-import com.urise.webapp.Util.JsonParser;
+import com.urise.webapp.util.JsonParser;
 import com.urise.webapp.model.Resume;
 
 import java.io.*;
