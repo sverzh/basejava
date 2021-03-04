@@ -6,27 +6,27 @@ public class MainDeadLock {
         Object o = new Object();
         Object o1 = new Object();
         new Thread(() -> {
-            try {
-                doIT(o, o1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Исполняется поток " + Thread.currentThread().getName());
+            deadlock(o, o1);
         }).start();
-
         new Thread(() -> {
-            try {
-                doIT(o1, o);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            System.out.println("Исполняется поток " + Thread.currentThread().getName());
+            deadlock(o1, o);
         }).start();
     }
 
-    public static void doIT(Object o, Object o1) throws Exception {
+    public static void deadlock(Object o, Object o1) {
+        System.out.println("Поток " + Thread.currentThread().getName() + " пытается захватить объект o");
         synchronized (o) {
-            System.out.println(Thread.currentThread().getName());
-            Thread.sleep(10);
+            System.out.println("Поток " + Thread.currentThread().getName() + " захватил объект O");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Поток " + Thread.currentThread().getName() + " пытается захватить объект o1");
             synchronized (o1) {
+                System.out.println("Поток " + Thread.currentThread().getName() + " захватил объект o1");
             }
         }
     }
