@@ -24,6 +24,7 @@ public class MainStream {
     public static List<Integer> oddOrEven(List<Integer> integers) {
         int mod = integers.stream().mapToInt(Integer::intValue)
                 .sum() % 2;
+        System.out.println(mod);
         return integers
                 .stream()
                 .filter(n -> n % 2 != mod)
