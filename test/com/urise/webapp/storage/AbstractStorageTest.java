@@ -55,7 +55,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = new Resume(UUID_2, "Ivanov");
+        Resume newResume = new ResumeTestData().fillResume(UUID_2, "NEW Ivanov");
         storage.update(newResume);
         Assert.assertEquals(newResume, storage.get(UUID_2));
     }

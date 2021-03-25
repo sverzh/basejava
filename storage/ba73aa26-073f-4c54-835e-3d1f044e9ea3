@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<resume>
+    <uuid>ba73aa26-073f-4c54-835e-3d1f044e9ea3</uuid>
+    <fullName>Ivanov</fullName>
+    <contacts>
+        <entry>
+            <key>PHONE</key>
+            <value>+7(921) 855-0482</value>
+        </entry>
+        <entry>
+            <key>SKYPE</key>
+            <value>grigory.kislin</value>
+        </entry>
+        <entry>
+            <key>EMAIL</key>
+            <value>mailto:gkislin@yandex.ru</value>
+        </entry>
+        <entry>
+            <key>LINKEDIN</key>
+            <value>https://www.linkedin.com/in/gkislin</value>
+        </entry>
+        <entry>
+            <key>GITHUB</key>
+            <value>https://github.com/gkislin</value>
+        </entry>
+        <entry>
+            <key>STACKOVERFLOW</key>
+            <value>https://stackoverflow.com/users/548473</value>
+        </entry>
+        <entry>
+            <key>HOMEPAGE</key>
+            <value>http://gkislin.ru/</value>
+        </entry>
+    </contacts>
+    <sections/>
+</resume>
