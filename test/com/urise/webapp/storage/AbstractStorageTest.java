@@ -27,7 +27,7 @@ public abstract class AbstractStorageTest {
     private static final Resume R4;
 
     static {
-        R1 = new ResumeTestData().fillResume(UUID_1, "Petrov");
+        R1 = new Resume(UUID_1, "Petrov");
         R2 = new ResumeTestData().fillResume(UUID_2, "Ivanov");
         R3 = new ResumeTestData().fillResume(UUID_3, "Sidorov");
         R4 = new ResumeTestData().fillResume(UUID_4, "Zhukov");
