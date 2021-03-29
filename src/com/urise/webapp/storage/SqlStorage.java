@@ -6,7 +6,10 @@ import com.urise.webapp.model.Resume;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SqlStorage implements Storage {
 
@@ -88,7 +91,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        Map<String, Resume> list = new HashMap<>();
+        Map<String, Resume> list = new LinkedHashMap<>();
         return sqlHelper.execute("" +
                 "SELECT * FROM resume r " +
                 "LEFT JOIN contact c " +
@@ -104,9 +107,7 @@ public class SqlStorage implements Storage {
                 }
                 addContact(rs, resume);
             }
-            List<Resume> resultList = new ArrayList<>(list.values());
-            Collections.sort(resultList);
-            return resultList;
+            return new ArrayList<>(list.values());
         });
     }
 
@@ -120,7 +121,7 @@ public class SqlStorage implements Storage {
     }
 
     private void insertContacts(Connection conn, Resume resume) throws SQLException {
-        if (resume != null) {
+        if (resume.getContacts().size() != 0) {
             try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
                 for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
                     ps.setString(1, resume.getUuid());
@@ -133,12 +134,11 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void deleteContacts(Connection conn, Resume resume) {
-        sqlHelper.execute("DELETE  FROM contact WHERE resume_uuid=?", ps -> {
+    private void deleteContacts(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("DELETE  FROM contact WHERE resume_uuid=?")) {
             ps.setString(1, resume.getUuid());
             ps.execute();
-            return null;
-        });
+        }
     }
 
     private void addContact(ResultSet rs, Resume r) throws SQLException {
@@ -147,6 +147,4 @@ public class SqlStorage implements Storage {
             r.addContact(ContactType.valueOf(rs.getString("type")), value);
         }
     }
-
-
 }
