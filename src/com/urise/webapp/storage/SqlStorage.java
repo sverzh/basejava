@@ -5,10 +5,7 @@ import com.urise.webapp.model.*;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqlStorage implements Storage {
 
@@ -16,6 +13,12 @@ public class SqlStorage implements Storage {
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
+        try {
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (Exception e){
+            throw new IllegalStateException("Driver didn`t load");
+        }
     }
 
     @Override
@@ -103,34 +106,34 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        Map<String, Resume> list = new LinkedHashMap<>();
+        Map<String, Resume> resumes = new LinkedHashMap<>();
         sqlHelper.transactionalExecute(conn -> {
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name,uuid ")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String uuid = rs.getString("uuid");
-                    Resume resume = list.get(uuid);
+                    Resume resume = resumes.get(uuid);
                     if (resume == null) {
                         resume = new Resume(uuid, rs.getString("full_name"));
-                        list.put(uuid, resume);
+                        resumes.put(uuid, resume);
                     }
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact ORDER BY resume_uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    addContact(rs, list.get(rs.getString("resume_uuid")));
+                    addContact(rs, resumes.get(rs.getString("resume_uuid")));
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section ORDER BY resume_uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    addSection(rs, list.get(rs.getString("resume_uuid")));
+                    addSection(rs, resumes.get(rs.getString("resume_uuid")));
                 }
             }
             return null;
         });
-        return new ArrayList<>(list.values());
+        return new ArrayList<>(resumes.values());
     }
 
     @Override
@@ -158,7 +161,7 @@ public class SqlStorage implements Storage {
 
     private void insertSections(Connection conn, Resume resume) throws SQLException {
         if (resume.getSections().size() != 0) {
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, section_type, value) VALUES (?,?,?)")) {
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
                 for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                     ps.setString(1, resume.getUuid());
                     SectionType sectiontype = e.getKey();
@@ -166,17 +169,13 @@ public class SqlStorage implements Storage {
                     switch (sectiontype) {
                         case PERSONAL:
                         case OBJECTIVE:
-                            String str1 = ((TextSection) e.getValue()).getText();
-                            ps.setString(3, str1);
+                            ps.setString(3, ((TextSection) e.getValue()).getText());
                             break;
                         case ACHIEVEMENT:
                         case QUALIFICATIONS:
                             List<String> list = ((ListSection) e.getValue()).getListSection();
-                            StringBuilder allText = new StringBuilder();
-                            for (String str : list) {
-                                allText = allText.append(str).append("\n");
-                            }
-                            ps.setString(3, allText.toString());
+                            String joined = String.join("\n", list);
+                            ps.setString(3, joined);
                             break;
                     }
                     ps.addBatch();
@@ -208,7 +207,7 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(ResultSet rs, Resume r) throws SQLException {
-        SectionType sectiontype = SectionType.valueOf(rs.getString("section_type"));
+        SectionType sectiontype = SectionType.valueOf(rs.getString("type"));
         switch (sectiontype) {
             case PERSONAL:
             case OBJECTIVE:
@@ -218,11 +217,8 @@ public class SqlStorage implements Storage {
                 break;
             case ACHIEVEMENT:
             case QUALIFICATIONS:
-                ListSection listSection = new ListSection();
                 String[] str = rs.getString("value").split("\n");
-                for (String s : str) {
-                    listSection.addToListSection(s);
-                }
+                ListSection listSection = new ListSection(Arrays.asList(str));
                 r.addSection(sectiontype, listSection);
                 break;
         }
