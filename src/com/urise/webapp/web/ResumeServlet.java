@@ -1,56 +1,86 @@
 package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
+import com.urise.webapp.model.*;
 import com.urise.webapp.storage.SqlStorage;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.ResultSet;
 
 public class ResumeServlet extends HttpServlet {
-    private SqlStorage sqlStorage;
+    private SqlStorage storage;
 
     @Override
-    public void init() throws ServletException {
-        sqlStorage = Config.get().getSqlStorage();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        storage = Config.get().getSqlStorage();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume r = storage.get(uuid);
+        r.setFullName(fullName);
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                r.addContact(type, value);
+            } else {
+                r.getContacts().remove(type);
+            }
+        }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
+            if (value != null && values.length != 0) {
+                switch (type) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        r.addSection(type, new TextSection(value));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ListSection listSection = new ListSection(value.split("\\n"));
+                        r.addSection(type, listSection);
+                }
+            } else {
+                r.getSections().remove(type);
+            }
+        }
+
+        storage.update(r);
+        response.sendRedirect("resume");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
-        String name = request.getParameter("name");
-        sqlStorage.sqlHelper.execute("SELECT * FROM resume ORDER BY full_name", ps -> {
-            ResultSet rs = ps.executeQuery();
-            try {
-                PrintWriter out = response.getWriter();
-                out.println(
-                        "<html>\n" +
-                                "<head><title>Resumes</title></head>\n" +
-                                "<body bgcolor = \"#f0f0f0\">\n" +
-                                "<h1 align = \"center\">Resumes</h1>\n");
-                out.println("<table width=\"50%\" height=\"90\" border=\"1\">\n" +
-                        "<tbody>" +
-                        "<tr>" +
-                        "<td width=\"300\" height=\"40\">uuid</td>" +
-                        "<td width=\"450\">full_name</td>" +
-                        "</tr>");
-                while (rs.next()) {
-                    out.println("<tr><td height=\"40\">" + rs.getString("uuid") +
-                            "</td>" +
-                            "<td>" + rs.getString("full_name") + "</td></tr>");
-                }
-                out.println("</table></body></html>");
-            } catch (Exception e) {
-            }
-            return null;
-        });
+        String uuid = request.getParameter("uuid");
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
+        }
+        Resume r;
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                r = storage.get(uuid);
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + "is illegal");
+        }
+        request.setAttribute("resume", r);
+        request.getRequestDispatcher("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+                .forward(request, response);
     }
 }
