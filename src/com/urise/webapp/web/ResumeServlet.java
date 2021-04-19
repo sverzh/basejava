@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private SqlStorage storage;
@@ -48,6 +50,11 @@ public class ResumeServlet extends HttpServlet {
                     case QUALIFICATIONS:
                         ListSection listSection = new ListSection(value.split("\\n"));
                         r.addSection(type, listSection);
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+
+
                 }
             } else {
                 r.getSections().remove(type);

@@ -37,11 +37,14 @@
         </c:forEach>
         <br>
         <h3>Секции:</h3>
-        <c:forEach var="type" items="<%=SectionType.values()%>">
-            <c:set var="section" value="${resume.getSection(type)}"/>
+        <c:forEach var="sectionEntry" items="${resume.sections}">
+            <jsp:useBean id="sectionEntry" type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
+            <c:set var="type" value="${sectionEntry.key}"/>
+            <c:set var="section" value="${sectionEntry.value}"/>
             <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
             <h4>${type.tittle}</h4>
-        <c:choose><c:when test="${type=='PERSONAL' || type=='OBJECTIVE'}">
+        <c:choose>
+            <c:when test="${type=='PERSONAL' || type=='OBJECTIVE'}">
             <textarea name="${type}" rows="5" cols="60"><%=((TextSection) section).getText()%></textarea>
         </c:when>
             <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
