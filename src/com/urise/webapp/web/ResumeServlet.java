@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private SqlStorage storage;
@@ -27,8 +25,15 @@ public class ResumeServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+        boolean isAdd = (uuid.length()==0);
+        Resume r;
+        if (isAdd) {
+            r = new Resume(fullName);
+        } else {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
+
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -60,9 +65,15 @@ public class ResumeServlet extends HttpServlet {
                 r.getSections().remove(type);
             }
         }
-
-        storage.update(r);
+        if (isAdd){
+            if (fullName.length()!=0){
+            storage.save(r);}
+        }
+        else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -82,6 +93,27 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                break;
+            case "add":
+                Resume empty = new Resume("","");
+                for (SectionType type : SectionType.values()) {
+                    switch (type) {
+                        case PERSONAL:
+                        case OBJECTIVE:
+                            empty.addSection(type, new TextSection(""));
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            ListSection section = new ListSection();
+                            section.addToListSection("");
+                            empty.addSection(type, section);
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            break;
+                    }
+                }
+                r = empty;
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + "is illegal");

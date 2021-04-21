@@ -32,8 +32,12 @@
                 <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="img/delete.png"></a></td>
                 <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
             </tr>
+            <br>
+
         </c:forEach>
     </table>
+    <br>
+    <button onclick="document.location='resume?action=add'">Добавить новое резюме</button>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
