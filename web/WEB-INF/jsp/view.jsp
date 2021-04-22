@@ -32,30 +32,46 @@
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
-    <h3><%=sectionEntry.getKey().getTittle()%></h3>
-    <c:set var="type" value="${sectionEntry.key}"/>
-    <c:set var="section" value="${sectionEntry.value}"/>
-    <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
-    <c:choose>
+            <c:set var="type" value="${sectionEntry.key}"/>
+            <c:set var="section" value="${sectionEntry.value}"/>
+            <jsp:useBean id="section" type="com.urise.webapp.model.AbstractSection"/>
+        <c:choose>
         <c:when test="${type=='PERSONAL' || type=='OBJECTIVE'}">
-            <%
+                <%
                 String[] str = ((TextSection) section).getText().split("\n");
-                request.setAttribute("textsection", str);
+                request.setAttribute("textSection", str);
+                request.setAttribute("size", str.length);
             %>
-            <c:forEach var="text" items="${textsection}">
-                ${text}<br>
-            </c:forEach>
-        </c:when>
-        <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-            <c:forEach var="text" items="<%=((ListSection) section).getListSection()%>">
+        <c:if test="${size>0 && !textSection[0].equals('')}">
+    <h3><%=sectionEntry.getKey().getTittle()%>
+    </h3>
+    <c:forEach var="text" items="${textSection}">
+        ${text}<br>
+    </c:forEach>
+    </c:if>
+    </c:when>
+    <c:when test="${type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
+        <%
+            request.setAttribute("listSection", ((ListSection) section).getListSection());
+            request.setAttribute("listSize", ((ListSection) section).getListSection().size());
+        %>
+        <c:if test="${listSize>0 && !listSection.get(0).equals('')}">
+            <h3><%=sectionEntry.getKey().getTittle()%>
+            </h3>
+            <c:forEach var="text" items="${listSection}">
                 <li type="disc">${text}</li>
             </c:forEach>
-        </c:when>
-        <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
-            <%
-                List<Organization> organizationList = ((OrganizationSection) sectionEntry.getValue()).getOrganizations();
-                request.setAttribute("orgList", organizationList);
-            %>
+        </c:if>
+    </c:when>
+    <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
+        <%
+            List<Organization> organizationList = ((OrganizationSection) sectionEntry.getValue()).getOrganizations();
+            request.setAttribute("orgList", organizationList);
+            request.setAttribute("orgSize", organizationList.size());
+        %>
+        <c:if test="${orgSize>0 && !orgList.get(0).equals('')}">
+            <h3><%=sectionEntry.getKey().getTittle()%>
+            </h3>
             <c:forEach var="org" items="${orgList}">
                 <h4><a href="${org.homePage}">${org.organization}</a></h4>
                 <c:forEach var="period" items="${org.periodList}">
@@ -64,7 +80,8 @@
                     <p>${period.description}</p>
                 </c:forEach>
             </c:forEach>
-        </c:when>
+        </c:if>
+    </c:when>
     </c:choose>
     <br>
     </c:forEach>
