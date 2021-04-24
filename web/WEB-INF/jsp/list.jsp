@@ -17,11 +17,11 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
+    <button onclick="document.location='resume?action=add'">Добавить новое резюме</button>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>Имя</th>
             <th>Email</th>
-
         </tr>
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" type="com.urise.webapp.model.Resume"/>
@@ -36,8 +36,7 @@
 
         </c:forEach>
     </table>
-    <br>
-    <button onclick="document.location='resume?action=add'">Добавить новое резюме</button>
+
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

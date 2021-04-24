@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private SqlStorage storage;
@@ -25,7 +27,7 @@ public class ResumeServlet extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        boolean isAdd = (uuid.length()==0);
+        boolean isAdd = (uuid.length() == 0);
         Resume r;
         if (isAdd) {
             r = new Resume(fullName);
@@ -45,35 +47,43 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            if (value != null && values.length != 0) {
+            if (value != null && values.length >= 1) {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        r.addSection(type, new TextSection(value));
+                        r.addSection(type, new TextSection(String.join("\n", listFilter(value))));
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        ListSection listSection = new ListSection(value.split("\\n"));
+                        ListSection listSection = new ListSection(listFilter(value));
                         r.addSection(type, listSection);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-
-
                 }
             } else {
                 r.getSections().remove(type);
             }
         }
-        if (isAdd){
-            if (fullName.length()!=0){
-            storage.save(r);}
-        }
-        else {
+        if (isAdd) {
+            if (fullName.length() != 0) {
+                storage.save(r);
+            }
+        } else {
             storage.update(r);
         }
         response.sendRedirect("resume");
+    }
 
+    private List<String> listFilter(String value) {
+        String[] array = value.split("\\n");
+        List<String> list = new LinkedList<>();
+        for (String str : array) {
+            if (!str.equals("\r")) {
+                list.add(str);
+            }
+        }
+        return list;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -95,7 +105,7 @@ public class ResumeServlet extends HttpServlet {
                 r = storage.get(uuid);
                 break;
             case "add":
-                Resume empty = new Resume("","");
+                Resume empty = new Resume("", "");
                 for (SectionType type : SectionType.values()) {
                     switch (type) {
                         case PERSONAL:

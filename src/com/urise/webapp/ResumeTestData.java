@@ -1,7 +1,7 @@
 package com.urise.webapp;
 
-import com.urise.webapp.util.DateUtil;
 import com.urise.webapp.model.*;
+import com.urise.webapp.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -30,7 +30,12 @@ public class ResumeTestData {
         listSection1.addToListSection("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.");
         listSection1.addToListSection("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.");
 
+        ListSection listSection2 = new ListSection();
+        listSection2.addToListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        listSection2.addToListSection("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
         resume.addSection(SectionType.ACHIEVEMENT, listSection1);
+        resume.addSection(SectionType.QUALIFICATIONS, listSection2);
+
 
         OrganizationSection organizationSection = new OrganizationSection();
         Organization organization1 = new Organization("Java Online Projects", "url", DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок.");
