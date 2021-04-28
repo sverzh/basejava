@@ -53,7 +53,7 @@ public class ResumeTestData {
         resume.addSection(SectionType.EXPERIENCE, organizationSection);
 
         OrganizationSection study = new OrganizationSection();
-        Organization organization6 = new Organization("Coursera", null, DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
+        Organization organization6 = new Organization("Coursera", "url", DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
         study.addOrganization(organization6);
         resume.addSection(SectionType.EDUCATION, study);
         return resume;

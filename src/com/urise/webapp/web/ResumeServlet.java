@@ -3,6 +3,7 @@ package com.urise.webapp.web;
 import com.urise.webapp.Config;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.SqlStorage;
+import com.urise.webapp.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,7 +50,8 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            if (value != null && values.length >= 1) {
+            String[] organizations = request.getParameterValues("organization");
+            if (value != null && values.length >= 1 || organizations.length >= 1) {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
@@ -60,6 +64,22 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
+                        OrganizationSection organizationSection = new OrganizationSection();
+                        String[] organizationUrl = request.getParameterValues("organizationUrl");
+                        String[] startDate = request.getParameterValues("startDate");
+                        String[] finishDate = request.getParameterValues("startDate");
+                        String[] position = request.getParameterValues("position");
+                        String[] description = request.getParameterValues("description");
+                        String[] typename = request.getParameterValues("typename");
+
+                        for (int i = 0; i < organizations.length; i++) {
+                            Organization organization = new Organization(organizations[i], organizationUrl[i], LocalDate.parse(startDate[i]), LocalDate.parse(finishDate[i]), position[i], description[i]);
+                            if (type.equals(SectionType.valueOf(typename[i]))) {
+                                organizationSection.addOrganization(organization);
+                            }
+                            r.addSection(type, organizationSection);
+                        }
+                        break;
                 }
             } else {
                 r.getSections().remove(type);
@@ -73,6 +93,7 @@ public class ResumeServlet extends HttpServlet {
             storage.update(r);
         }
         response.sendRedirect("resume");
+
     }
 
     private List<String> listFilter(String value) {
@@ -120,6 +141,10 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case EXPERIENCE:
                         case EDUCATION:
+                            OrganizationSection organizationSection = new OrganizationSection();
+                            Organization organization = new Organization("", "http:\\\\", DateUtil.of(2000, Month.JANUARY), DateUtil.of(2000, Month.JANUARY), "", "");
+                            organizationSection.addOrganization(organization);
+                            empty.addSection(type, organizationSection);
                             break;
                     }
                 }
