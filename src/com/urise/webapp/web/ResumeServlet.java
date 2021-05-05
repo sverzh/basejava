@@ -26,6 +26,7 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        boolean responsed = false;
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
@@ -38,7 +39,6 @@ public class ResumeServlet extends HttpServlet {
             r = storage.get(uuid);
             r.setFullName(fullName);
         }
-
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -50,7 +50,8 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
-            String[] organizations = request.getParameterValues("organization");
+            String[] organizations = request.getParameterValues("organization1");
+            String addOrg = request.getParameter("addOrg");
             if (value != null && values.length >= 1 || organizations.length >= 1) {
                 switch (type) {
                     case PERSONAL:
@@ -65,20 +66,48 @@ public class ResumeServlet extends HttpServlet {
                     case EXPERIENCE:
                     case EDUCATION:
                         OrganizationSection organizationSection = new OrganizationSection();
-                        String[] organizationUrl = request.getParameterValues("organizationUrl");
+                        String[] orgUrl = request.getParameterValues("orgUrl");
                         String[] startDate = request.getParameterValues("startDate");
                         String[] finishDate = request.getParameterValues("startDate");
                         String[] position = request.getParameterValues("position");
                         String[] description = request.getParameterValues("description");
                         String[] typename = request.getParameterValues("typename");
-
-                        for (int i = 0; i < organizations.length; i++) {
-                            Organization organization = new Organization(organizations[i], organizationUrl[i], LocalDate.parse(startDate[i]), LocalDate.parse(finishDate[i]), position[i], description[i]);
+                        String[] orgOfPeriod = request.getParameterValues("orgOfPeriod");
+                        String[] resultArray;
+                        for (int i = 0; i < orgOfPeriod.length; i++) {
+                            if (orgOfPeriod[i].equals("")) {
+                                if (i < organizations.length - 1) {
+                                    orgOfPeriod[i] = organizations[i];
+                                } else orgOfPeriod[i] = organizations[organizations.length - 1];
+                            }
+                        }
+                        if (organizations.length < orgOfPeriod.length) {
+                            resultArray = orgOfPeriod.clone();
+                        } else {
+                            resultArray = organizations.clone();
+                        }
+                        for (int i = 0; i < resultArray.length; i++) {
+                            Organization organization = new Organization(resultArray[i], orgUrl[i], LocalDate.parse(startDate[i]), LocalDate.parse(finishDate[i]), position[i], description[i]);
                             if (type.equals(SectionType.valueOf(typename[i]))) {
                                 organizationSection.addOrganization(organization);
                             }
-                            r.addSection(type, organizationSection);
                         }
+                        if (addOrg != null && type.equals(SectionType.valueOf(addOrg))) {
+                            Organization emptyorganization = new Organization("", "http:\\\\", DateUtil.of(2000, Month.JANUARY), DateUtil.of(2000, Month.JANUARY), "", "");
+                            organizationSection.addOrganization(emptyorganization);
+                            responsed = true;
+                        }
+                        String addPos = request.getParameter("addPos");
+                        if (addPos != null) {
+                            String[] pos = addPos.split(" ");
+                            if (pos[1] != null && type.equals(SectionType.valueOf(pos[0]))) {
+                                Organization newPosition = new Organization(pos[1], "http:\\\\", DateUtil.of(2000, Month.JANUARY), DateUtil.of(2000, Month.JANUARY), "", "");
+                                organizationSection.addOrganization(newPosition);
+                                responsed = true;
+                            }
+                        }
+
+                        r.addSection(type, organizationSection);
                         break;
                 }
             } else {
@@ -92,8 +121,9 @@ public class ResumeServlet extends HttpServlet {
         } else {
             storage.update(r);
         }
-        response.sendRedirect("resume");
-
+        if (!responsed) {
+            response.sendRedirect("resume");
+        } else response.sendRedirect("resume?uuid=" + r.getUuid() + "&action=edit");
     }
 
     private List<String> listFilter(String value) {
@@ -141,10 +171,10 @@ public class ResumeServlet extends HttpServlet {
                             break;
                         case EXPERIENCE:
                         case EDUCATION:
-                            OrganizationSection organizationSection = new OrganizationSection();
+                            OrganizationSection emptyOrganizationSection = new OrganizationSection();
                             Organization organization = new Organization("", "http:\\\\", DateUtil.of(2000, Month.JANUARY), DateUtil.of(2000, Month.JANUARY), "", "");
-                            organizationSection.addOrganization(organization);
-                            empty.addSection(type, organizationSection);
+                            emptyOrganizationSection.addOrganization(organization);
+                            empty.addSection(type, emptyOrganizationSection);
                             break;
                     }
                 }

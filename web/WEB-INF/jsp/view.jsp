@@ -68,8 +68,9 @@
             List<Organization> organizationList = ((OrganizationSection) sectionEntry.getValue()).getOrganizations();
             request.setAttribute("orgList", organizationList);
             request.setAttribute("orgSize", organizationList.size());
+            request.setAttribute("get0", organizationList.get(0));
         %>
-        <c:if test="${orgSize>0 && !orgList.get(0).equals('')}">
+        <c:if test="${orgSize>=1 && !get0.organization.equals(\"\")}">
             <h3><%=sectionEntry.getKey().getTittle()%>
             </h3>
             <c:forEach var="org" items="${orgList}">
@@ -85,7 +86,6 @@
     </c:choose>
     <br>
     </c:forEach>
-
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

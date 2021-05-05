@@ -53,15 +53,19 @@
                       cols="60"><%=String.join("\n", ((ListSection) section).getListSection())%></textarea>
                 </c:when>
                 <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
-                    <c:forEach var="organizations" items="<%=((OrganizationSection) section).getOrganizations()%>">
+                    <c:forEach var="organizations" items="<%=((OrganizationSection) section).getOrganizations()%>"
+                               varStatus="orgCounter">
                         <label> <strong>Организация:</strong></label>
                         <br>
-                        <input type="hidden" name="typename" value="${type}">
                         <c:set var="organization" value="${organizations.organization}"/>
-                        <input name="organization" type="text" value="${organization}" size="45">
+                        <input name="organization1" type="text" value="${organization}" size="45">
                         <label> Url:</label>
                         <input name="organizationUrl" type="text" value="${organizations.homePage}" size="56">
-                        <c:forEach var="period" items="${organizations.periodList}">
+                        <c:forEach var="period" items="${organizations.periodList}" varStatus="perCounter">
+                            <input type="hidden" name="typename" value="${type}">
+                            <input type="hidden" name="orgUrl" value="${organizations.homePage}">
+                            <input type="hidden" name="orgOfPeriod" value="${organization}">
+                            <input type="hidden" name="${organization}" value="${perCounter.count}">
                             <table width="1033" border="1" align="left" cellpadding="0" cellspacing="0">
                                 <tbody>
                                 <tr>
@@ -86,7 +90,11 @@
                             <br>
                         </c:forEach>
                         <br>
+                        <button type="submit" name="addPos" value="${type} ${organization}">Добавить позицию</button>
+                        <br>
+                        <br>
                     </c:forEach>
+                    <button type="submit" name="addOrg" value="${type}">Добавить организацию</button>
                 </c:when>
             </c:choose>
         </c:forEach>
