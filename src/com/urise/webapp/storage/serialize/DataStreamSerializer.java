@@ -39,7 +39,7 @@ public class DataStreamSerializer implements Serialize {
                         List<Organization> organizationList = ((OrganizationSection) entry.getValue()).getOrganizations();
                         writeWithException(dos, organizationList, org -> {
                             dos.writeUTF(org.getOrganization());
-                            dos.writeUTF(org.getHomePage());
+                            dos.writeUTF(org.getHomePage().getUrl());
                             List<Organization.Period> periods = org.getPeriodList();
                             writeWithException(dos, periods, per -> {
                                 writeLocalDate(dos, per.getBeginDate());
@@ -60,7 +60,7 @@ public class DataStreamSerializer implements Serialize {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            readOne(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readOne(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
             readOne(dis, () -> {
                 SectionType sectiontype = SectionType.valueOf(dis.readUTF());
                 switch (sectiontype) {
@@ -68,12 +68,12 @@ public class DataStreamSerializer implements Serialize {
                     case OBJECTIVE:
                         TextSection textSection = new TextSection();
                         textSection.setText(dis.readUTF());
-                        resume.addSection(sectiontype, textSection);
+                        resume.setSection(sectiontype, textSection);
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         ListSection listSection = new ListSection(readWithException(dis, dis::readUTF));
-                        resume.addSection(sectiontype, listSection);
+                        resume.setSection(sectiontype, listSection);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
@@ -86,7 +86,7 @@ public class DataStreamSerializer implements Serialize {
                                 organizationSection.addOrganization(organization);
                             });
                         });
-                        resume.addSection(sectiontype, organizationSection);
+                        resume.setSection(sectiontype, organizationSection);
                         break;
                 }
             });

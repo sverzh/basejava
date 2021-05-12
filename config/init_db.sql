@@ -4,9 +4,6 @@ create table resume
   full_name text     NOT NULL
 );
 
-alter table resume
-  owner to postgres;
-
 create table contact
 (
   id          serial,
@@ -30,9 +27,6 @@ create table section
       references resume
       on delete cascade
 );
-
-alter table section
-  owner to postgres;
 
 create unique index section_id_uindex
   on section (id);

@@ -3,6 +3,7 @@
 <%@ page import="com.urise.webapp.model.OrganizationSection" %>
 <%@ page import="com.urise.webapp.model.TextSection" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.urise.webapp.util.HtmlUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
@@ -29,6 +30,7 @@
                          type="java.util.Map.Entry<com.urise.webapp.model.ContactType, java.lang.String>"/>
                 <%=contactEntry.getKey().toHtml(contactEntry.getValue())%><br/>
         </c:forEach>
+    <table cellpadding="2">
         <c:forEach var="sectionEntry" items="${resume.sections}">
             <jsp:useBean id="sectionEntry"
                          type="java.util.Map.Entry<com.urise.webapp.model.SectionType, com.urise.webapp.model.AbstractSection>"/>
@@ -43,7 +45,7 @@
                 request.setAttribute("size", str.length);
             %>
         <c:if test="${size>0 && !textSection[0].equals('')}">
-    <h3><%=sectionEntry.getKey().getTittle()%>
+  <h3><%=sectionEntry.getKey().getTittle()%>
     </h3>
     <c:forEach var="text" items="${textSection}">
         ${text}<br>
@@ -71,14 +73,21 @@
             request.setAttribute("get0", organizationList.get(0));
         %>
         <c:if test="${orgSize>=1 && !get0.organization.equals(\"\")}">
-            <h3><%=sectionEntry.getKey().getTittle()%>
-            </h3>
+            <td><h3><%=sectionEntry.getKey().getTittle()%></h3></td>
             <c:forEach var="org" items="${orgList}">
-                <h4><a href="${org.homePage}">${org.organization}</a></h4>
-                <c:forEach var="period" items="${org.periodList}">
-                    <p>${period.beginDate} - ${period.finishDate}</p>
-                    <strong>${period.title}</strong>
-                    <p>${period.description}</p>
+
+                <tr>
+                    <td colspan="2">
+                        <h4><a href="${org.homePage}">${org.organization}</a></h4>
+                    </td>
+                </tr>
+                       <c:forEach var="position" items="${org.periodList}">
+                    <jsp:useBean id="position" type="com.urise.webapp.model.Organization.Period"/>
+                    <tr>
+                        <td width="15%" style="vertical-align: top"><%=HtmlUtil.formatDates(position)%>
+                        </td>
+                        <td><b>${position.title}</b><br>${position.description}</td>
+                    </tr>
                 </c:forEach>
             </c:forEach>
         </c:if>
@@ -86,6 +95,9 @@
     </c:choose>
     <br>
     </c:forEach>
+    </table>
+    <br/>
+    <button onclick="window.history.back()">ОК</button>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

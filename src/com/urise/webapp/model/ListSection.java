@@ -10,16 +10,18 @@ public class ListSection extends AbstractSection {
     private final static long serialVersionUID = 1L;
     private List<String> listSection = new ArrayList<>();
 
+    public static final ListSection EMPTY = new ListSection("");
+
     public ListSection() {
+    }
+
+    public ListSection(String... items) {
+        this(Arrays.asList(items));
     }
 
     public ListSection(List<String> items) {
         Objects.requireNonNull(items, "items must not be null");
         this.listSection = items;    }
-
-    public ListSection(String... items) {
-        this(Arrays.asList(items));
-    }
 
     public void addToListSection(String string) {
         listSection.add(string);

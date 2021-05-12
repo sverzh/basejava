@@ -10,21 +10,21 @@ public class ResumeTestData {
 
     public Resume fillResume(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
-        resume.addContact(ContactType.PHONE, "+7(921) 855-0482");
-        resume.addContact(ContactType.SKYPE, "grigory.kislin");
-        resume.addContact(ContactType.EMAIL, "mailto:gkislin@yandex.ru");
-        resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        resume.addContact(ContactType.GITHUB, "https://github.com/gkislin");
-        resume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-        resume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
+        resume.setContact(ContactType.PHONE, "+7(921) 855-0482");
+        resume.setContact(ContactType.SKYPE, "grigory.kislin");
+        resume.setContact(ContactType.EMAIL, "mailto:gkislin@yandex.ru");
+        resume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        resume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
+        resume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
         TextSection textSection1 = new TextSection();
         textSection1.setText("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
 
         TextSection textSection2 = new TextSection();
         textSection2.setText("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
-        resume.addSection(SectionType.OBJECTIVE, textSection1);
-        resume.addSection(SectionType.PERSONAL, textSection2);
+        resume.setSection(SectionType.OBJECTIVE, textSection1);
+        resume.setSection(SectionType.PERSONAL, textSection2);
 
         ListSection listSection1 = new ListSection();
         listSection1.addToListSection("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 1000 выпускников.");
@@ -33,8 +33,8 @@ public class ResumeTestData {
         ListSection listSection2 = new ListSection();
         listSection2.addToListSection("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         listSection2.addToListSection("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle,");
-        resume.addSection(SectionType.ACHIEVEMENT, listSection1);
-        resume.addSection(SectionType.QUALIFICATIONS, listSection2);
+        resume.setSection(SectionType.ACHIEVEMENT, listSection1);
+        resume.setSection(SectionType.QUALIFICATIONS, listSection2);
 
 
         OrganizationSection organizationSection = new OrganizationSection();
@@ -50,12 +50,12 @@ public class ResumeTestData {
         organizationSection.addOrganization(organization4);
         organizationSection.addOrganization(organization5);
 
-        resume.addSection(SectionType.EXPERIENCE, organizationSection);
+        resume.setSection(SectionType.EXPERIENCE, organizationSection);
 
         OrganizationSection study = new OrganizationSection();
         Organization organization6 = new Organization("Coursera", "url", DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.MAY), "\"Functional Programming Principles in Scala\" by Martin Odersky", null);
         study.addOrganization(organization6);
-        resume.addSection(SectionType.EDUCATION, study);
+        resume.setSection(SectionType.EDUCATION, study);
         return resume;
     }
 }

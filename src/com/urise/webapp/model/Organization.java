@@ -8,17 +8,28 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
+    public static final Organization EMPTY = new Organization("", "", Period.EMPTY);
     private final static long serialVersionUID = 1L;
     protected List<Period> periodList = new ArrayList<>();
     private Link homePage;
 
     public Organization() {
+    }
+
+    public Organization(String name, String url, Period... periods) {
+        this(new Link(name, url), Arrays.asList(periods));
+    }
+
+    public Organization(Link homePage, List<Period> periods) {
+        this.homePage = homePage;
+        this.periodList = periods;
     }
 
     public Organization(String organization, String url, LocalDate beginDate, LocalDate finishDate, String title, String description) {
@@ -28,8 +39,8 @@ public class Organization implements Serializable {
         periodList.add(period);
     }
 
-    public String getHomePage() {
-        return homePage.getUrl();
+    public Link getHomePage() {
+        return homePage;
     }
 
     public String getOrganization() {
@@ -66,6 +77,7 @@ public class Organization implements Serializable {
 
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
+        public static final Period EMPTY = new Period();
         private final static long serialVersionUID = 1L;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate beginDate;
